@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TODOアプリ</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-4">
+    <h1 class="mb-4">TODOアプリ</h1>
+		    <div class="card mt-4">
+      <div class="card-body">
+        <h2 id="" class="card-title mb-4">新しいタスクを追加</h2>
+				<form action="/add" method="post" onsubmit="return validateForm()">
+
+          <div class="form-group">
+            <input id="taskNameInput" class="form-control" type="text" name="taskName" placeholder="タスク名" required maxlength="150">
+          </div>
+          <button class="btn btn-primary">追加</button>
+        </form>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title mb-4">タスク一覧</h2>
+        <ul class="list-group">
+          <% for(let i = 0; i < tasks.length; i++) { %>
+            <li class="list-group-item">
+              <%= tasks[i].task_name %>
+              <small class="text-muted ml-3"><%= new Date(tasks[i].time).toLocaleString() %>に追加</small>
+              <form class="float-right" action="/delete" method="post">
+                <input type="hidden" name="taskId" value="<%= tasks[i].id %>">
+                <button class="btn btn-danger">削除</button>
+              </form>
+            </li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+  <script>
+    function validateForm() {
+      // 入力欄からスペースを取り除く
+      const taskName = document.getElementById("taskNameInput").value.trim();
+      // 空文字の場合は送信しない
+      if (taskName === "") {
+        alert("タスク名を入力してください");
+        return false;
+      }
+      return true;
+    }
+
+    const textarea = document.getElementById("taskNameInput");
+  const counter = document.createElement("span");
+  counter.innerHTML = "0 / 150文字";
+  textarea.parentNode.appendChild(counter);
+
+  textarea.addEventListener("input", () => {
+    const count = textarea.value.length;
+    counter.innerHTML = `${count} / 150文字`;
+    if (count > 150) {
+      textarea.value = textarea.value.slice(0, 150);
+      counter.innerHTML = "150 / 150文字";
+    }
+  });
+
+
+  </script>
+</body>
+</html>

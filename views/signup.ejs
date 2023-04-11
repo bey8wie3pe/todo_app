@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>アカウント作成</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1 class="mt-5 mb-4 text-center">アカウント作成ページ</h1>
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+				<a href="/login">アカウントを作っている場合</a>
+        
+        <form method="POST" action="/signup">
+          <div class="form-group">
+            <label for="username">ユーザーネーム</label>
+            <input type="text" class="form-control" id="username" name="username">
+          </div>
+          <div class="form-group">
+            <label for="password">パスワード</label>
+            <input type="password" class="form-control" id="password" name="password">
+          </div>
+          <button type="submit" class="btn btn-primary">アカウント作成</button>
+        </form>
+      </div>
+    </div>
+  </div>
+	<style>
+		/* アカウント作成ボタン */
+		button[type="submit"] {
+			font-size: 16px;
+			padding: 10px;
+			border-radius: 5px;
+			background-color: #007bff;
+			color: #fff;
+			border: none;
+			width: 100%;
+		}
+	
+	</style>
+</body>
+</html>

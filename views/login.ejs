@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1 class="mt-5 mb-4 text-center">ログインページ</h1>
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+				<a href="/signup">アカウントを作っていない場合</a>
+        <form method="POST" action="/login">
+          <div class="form-group">
+            <label for="username">ユーザーネーム</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+          </div>
+          <div class="form-group">
+            <label for="password">パスワード</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+          </div>
+          <button type="submit" class="btn btn-primary">ログイン</button>
+        </form>
+      </div>
+    </div>
+  </div>
+	<style>
+		/* ログインボタン */
+		button[type="submit"] {
+			font-size: 16px;
+			padding: 10px;
+			border-radius: 5px;
+			background-color: #007bff;
+			color: #fff;
+			border: none;
+			width: 100%;
+		}
+	</style>
+</body>
+</html>
