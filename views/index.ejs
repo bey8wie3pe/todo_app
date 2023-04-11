@@ -59,9 +59,9 @@
   textarea.addEventListener("input", () => {
     const count = textarea.value.length;
     counter.innerHTML = `${count} / 150文字`;
-    if (count > 150) {
+    if (count === 150) {
       textarea.value = textarea.value.slice(0, 150);
-      counter.innerHTML = "150 / 150文字";
+      counter.innerHTML = "150文字以降は切り捨てされます";
     }
   });
 

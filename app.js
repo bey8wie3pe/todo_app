@@ -42,12 +42,14 @@ app.get('/', (req, res) => {
     if (err) throw err;
     res.render('index', { tasks: results });
   });
+  let language = req.headers['accept-language'];
+  console.log(language);
 });
 
 
 //アカウント作成ページ
 app.get('/signup', (req, res) => {
-  res.render('signup');
+  res.render('signup', { errorMessage: null});
 });
 
 //ログインページ表示
