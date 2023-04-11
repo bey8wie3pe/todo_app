@@ -42,8 +42,6 @@ app.get('/', (req, res) => {
     if (err) throw err;
     res.render('index', { tasks: results });
   });
-  let language = req.headers['accept-language'];
-  console.log(language);
 });
 
 
