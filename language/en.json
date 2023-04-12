@@ -1,0 +1,12 @@
+{
+	"title": "TODO App",
+	"new_task": "Add New Task",
+	"new_task_name": "Enter Task Name",
+	"add_btn": "Add",
+	"task_list": "Task List",
+	"task_add_date": "Added on",
+	"task_delete": "Delete",
+	"task_add_error": "Please enter a task name",
+	"task_text_limit": "/ 150 characters",
+	"task_text_alert": "Characters over 150 will be truncated"
+}

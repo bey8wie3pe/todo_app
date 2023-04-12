@@ -3,6 +3,7 @@ const mysql = require('mysql');
 const ejs = require('ejs');
 const session = require('express-session');
 const app = express();
+const fs = require('fs');
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
@@ -30,8 +31,27 @@ app.use(session({
   cookie: { maxAge: 60 * 60 *  24 * 30* 1000} 
 }));
 
+
+function language_check(req){
+  //言語取得して適切なjsonファイルを読み取る
+  let language = req.headers['accept-language'];
+  let primaryLanguage = language.split(',')[0].split(';')[0];
+  let filePath = `./language/${primaryLanguage}.json`;
+  let jsonData;
+  if (fs.existsSync(filePath)) {
+    let data = fs.readFileSync(filePath);
+    jsonData = JSON.parse(data);
+  } else {
+    let data = fs.readFileSync('./language/en.json');
+    jsonData = JSON.parse(data);
+  }
+  return jsonData;
+}
+
+
 //タスクページ
 app.get('/', (req, res) => {
+  let time = new Date();
 	//ログインしていないときリダイレクトする
   if (!req.session.userId) {
     return res.redirect('/login');
@@ -40,8 +60,11 @@ app.get('/', (req, res) => {
 	//ログインしているアカウントのタスクを取得
 	connection.query('SELECT * FROM tasks WHERE user_id = ?', [req.session.userId], (err, results) => {
     if (err) throw err;
-    res.render('index', { tasks: results });
+    let jsonData = language_check(req);
+    res.render('index', { tasks: results, language: jsonData});
+    console.log(`${new Date() - time}ms`);
   });
+
 });
 
 
@@ -59,6 +82,9 @@ app.get('/login', (req, res) => {
 app.post('/add', (req, res) => {
   const taskName = req.body.taskName;
 	const userId = req.session.userId;
+  if (!req.session.userId) {
+    return res.redirect('/login');
+  }
 	connection.query('INSERT INTO tasks (task_name, user_id) VALUES (?, ?)', [taskName, userId], (err, results)=> {
     if (err) throw err;
     res.redirect('/');
@@ -68,6 +94,9 @@ app.post('/add', (req, res) => {
 // タスク削除処理
 app.post('/delete', (req, res) => {
   const taskId = req.body.taskId;
+  if (!req.session.userId) {
+    return res.redirect('/login');
+  }
   connection.query('DELETE FROM tasks WHERE id = ?', [taskId], (err, results) => {
     if (err) throw err;
     res.redirect('/');
@@ -95,17 +124,17 @@ app.post('/signup', (req, res) => {
 
 // ログイン処理
 app.post('/login', (req, res) => {
-const username = req.body.username;
-const password = req.body.password;
-connection.query('SELECT * FROM users WHERE user_name = ? AND user_password = ?', [username, password], (err, results) => {
-  if (results.length > 0) {
-    req.session.userId = results[0].id;
-    res.redirect('/');
-  } else {
-    res.send('ユーザーネームかパスワードが違います');
-  }
-});
-});
+  const username = req.body.username;
+  const password = req.body.password;
+  connection.query('SELECT * FROM users WHERE user_name = ? AND user_password = ?', [username, password], (err, results) => {
+    if (results.length > 0) {
+      req.session.userId = results[0].id;
+      res.redirect('/');
+    } else {
+      res.render('login', { errorMessage: 'ユーザーネームかパスワードが違います' });
+    }
+  });
+  });
 
 
 // サーバー起動

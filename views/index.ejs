@@ -2,35 +2,35 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>TODOアプリ</title>
+  <title><%= language.title %></title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
   <div class="container mt-4">
-    <h1 class="mb-4">TODOアプリ</h1>
+    <h1 class="mb-4"><%= language.title %></h1>
 		    <div class="card mt-4">
       <div class="card-body">
-        <h2 id="" class="card-title mb-4">新しいタスクを追加</h2>
+        <h2 id="" class="card-title mb-4"><%= language.new_task %></h2>
 				<form action="/add" method="post" onsubmit="return validateForm()">
 
           <div class="form-group">
-            <input id="taskNameInput" class="form-control" type="text" name="taskName" placeholder="タスク名" required maxlength="150">
+            <input id="taskNameInput" class="form-control" type="text" name="taskName" placeholder="<%= language.new_task_name %>" required maxlength="150">
           </div>
-          <button class="btn btn-primary">追加</button>
+          <button class="btn btn-primary"><%= language.add_btn %></button>
         </form>
       </div>
     </div>
     <div class="card">
       <div class="card-body">
-        <h2 class="card-title mb-4">タスク一覧</h2>
+        <h2 class="card-title mb-4"><%= language.task_list %></h2>
         <ul class="list-group">
           <% for(let i = 0; i < tasks.length; i++) { %>
             <li class="list-group-item">
               <%= tasks[i].task_name %>
-              <small class="text-muted ml-3"><%= new Date(tasks[i].time).toLocaleString() %>に追加</small>
+              <small class="text-muted ml-3"><%= new Date(tasks[i].time).toLocaleString() %><%= language.task_add_date %></small>
               <form class="float-right" action="/delete" method="post">
                 <input type="hidden" name="taskId" value="<%= tasks[i].id %>">
-                <button class="btn btn-danger">削除</button>
+                <button class="btn btn-danger"><%= language.task_delete %></button>
               </form>
             </li>
           <% } %>
@@ -45,7 +45,7 @@
       const taskName = document.getElementById("taskNameInput").value.trim();
       // 空文字の場合は送信しない
       if (taskName === "") {
-        alert("タスク名を入力してください");
+        alert("<%= language.task_add_error %>");
         return false;
       }
       return true;
@@ -53,15 +53,15 @@
 
     const textarea = document.getElementById("taskNameInput");
   const counter = document.createElement("span");
-  counter.innerHTML = "0 / 150文字";
+  counter.innerHTML = "0 <%= language.task_text_limit %>";
   textarea.parentNode.appendChild(counter);
 
   textarea.addEventListener("input", () => {
     const count = textarea.value.length;
-    counter.innerHTML = `${count} / 150文字`;
+    counter.innerHTML = `${count}<%= language.task_text_limit %>`;
     if (count === 150) {
       textarea.value = textarea.value.slice(0, 150);
-      counter.innerHTML = "150文字以降は切り捨てされます";
+      counter.innerHTML = "<%= language.task_text_alert %>";
     }
   });
 
