@@ -24,13 +24,60 @@ connection.connect((err) => {
 
 //ログインセッション
 app.use(session({
-  secret: 'secret-key',
+  secret: "alkjfafklajfklajfkakdfdsjfiwfwkf09458370924789540389m4v82;irojgptwjgh89b0654h0t3h8gb34t6htbghu89th09tynm90rcevn",
   resave: false,
   saveUninitialized: true,
   //30日保存する
   cookie: { maxAge: 60 * 60 *  24 * 30* 1000} 
 }));
 
+
+
+//タスクページ
+// app.get('/', (req, res) => {
+// 	let time = new Date();
+// 		//ログインしていないときリダイレクトする
+// 	if (!req.session.userId) {
+// 		return res.redirect('/login');
+// 	}
+// 		//ログインしているアカウントのタスクを取得
+// 		connection.query('SELECT * FROM tasks WHERE user_id = ?', [req.session.userId], (err, results) => {
+// 		if (err) throw err;
+// 		let jsonData = language_check(req);
+// 		res.render('index', { tasks: results, language: jsonData});
+// 		console.log(`${new Date() - time}ms`);
+// 	});
+
+// });
+//追加した順に表示
+app.get('/', (req, res) => {
+	let time = new Date();
+	//ログインしていないときリダイレクトする
+	if (!req.session.userId) {
+		return res.redirect('/login');
+	}
+  //ログインしているアカウントのタスクを取得
+  connection.query('SELECT * FROM tasks WHERE user_id = ? ORDER BY created_at DESC', [req.session.userId], (err, results) => {
+  if (err) throw err;
+  let jsonData = language_check(req);
+  res.render('index', { tasks: results, language: jsonData});
+  console.log(`${new Date() - time}ms`);
+	});
+
+});
+
+
+
+
+//アカウント作成ページ
+app.get('/signup', (req, res) => {
+	res.render('signup', { errorMessage: null});
+});
+
+//ログインページ表示
+app.get('/login', (req, res) => {
+	res.render('login', {errorMessage: null});
+});
 
 function language_check(req){
   //言語取得して適切なjsonファイルを読み取る
@@ -49,34 +96,7 @@ function language_check(req){
 }
 
 
-//タスクページ
-app.get('/', (req, res) => {
-  let time = new Date();
-	//ログインしていないときリダイレクトする
-  if (!req.session.userId) {
-    return res.redirect('/login');
-  }
 
-	//ログインしているアカウントのタスクを取得
-	connection.query('SELECT * FROM tasks WHERE user_id = ?', [req.session.userId], (err, results) => {
-    if (err) throw err;
-    let jsonData = language_check(req);
-    res.render('index', { tasks: results, language: jsonData});
-    console.log(`${new Date() - time}ms`);
-  });
-
-});
-
-
-//アカウント作成ページ
-app.get('/signup', (req, res) => {
-  res.render('signup', { errorMessage: null});
-});
-
-//ログインページ表示
-app.get('/login', (req, res) => {
-  res.render('login', {errorMessage: null});
-});
 
 //タスク追加処理
 app.post('/add', (req, res) => {
