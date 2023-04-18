@@ -1,5 +1,7 @@
 {
 	"title": "TODOアプリ",
+	"new_task_view": "新しい順に見る",
+	"omoitukanai": "古い順に見る",
 	"new_task": "新しいタスクを追加",
 	"new_task_name": "タスク名を入力",
 	"add_btn": "追加",
@@ -8,6 +10,18 @@
 	"task_delete": "削除",
 	"task_add_error": "タスク名を入力してください",
 	"task_text_limit": "/ 150文字",
-	"task_text_alert": "150文字以降は切り捨てされます"
+	"task_text_alert": "150文字以降は切り捨てされます",
 	
+	"signup_title": "アカウント作成",
+	"account_created": "アカウントを作っている場合",
+	"signup_user_name": "ユーザーネーム",
+	"signup_password": "パスワード",
+	"signup_create_account": "アカウントを作成する",
+
+	"login_title": "ログインページ",
+	"account_no_created": "アカウントを作っていない場合",
+	"login_user_name": "ユーザーネーム",
+	"login_password": "パスワード",
+	"login_btn": "ログインする"
+
 }

@@ -6,7 +6,18 @@
 	"task_list": "Task List",
 	"task_add_date": "Added on",
 	"task_delete": "Delete",
-	"task_add_error": "Please enter a task name",
+	"task_add_error": "Please enter task name",
 	"task_text_limit": "/ 150 characters",
-	"task_text_alert": "Characters over 150 will be truncated"
+	"task_text_alert": "Text will be truncated after 150 characters",
+
+	"signup_title": "Create Account",
+	"account_created": "If you already have an account,",
+	"signup_user_name": "Username",
+	"signup_password": "Password",
+	"signup_create_account": "Create Account",
+	
+	"login_title": "Login Page",
+	"account_no_created": "If you do not have an account,",
+	"login_user_name": "Username",
+	"login_password": "Password"
 }

@@ -7,6 +7,8 @@ const fs = require('fs');
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 //MySQL接続設定
 const connection = mysql.createConnection({
@@ -31,24 +33,36 @@ app.use(session({
   cookie: { maxAge: 60 * 60 *  24 * 30* 1000} 
 }));
 
+//言語取得して適切なjsonファイルを読み取る
+function language_check(req){
+  let language = req.headers['accept-language'];
+  let primaryLanguage = language.split(',')[0].split(';')[0];
+  if (primaryLanguage === "ja-JP"){
+    primaryLanguage = "ja"
+  }
+  let filePath = `./language/${primaryLanguage}.json`;
+  console.log(filePath);
+  let jsondata;
+  if (fs.existsSync(filePath)) {
+    let data = fs.readFileSync(filePath);
+    jsondata = JSON.parse(data);
+  } else {
+    let data = fs.readFileSync('./language/en.json');
+    jsondata = JSON.parse(data);
+  }
+  return jsondata;
+}
+
+function account_str_check(input) {
+  //8文字以上かつアルファベットと数字のみ
+  //ユーザーネームもなるため一時的に無効化する
+  // const alphanumericRegex = /^[a-zA-Z0-9]{8,}$/; 
+  const alphanumericRegex = /^[a-zA-Z0-9]+$/
+  return alphanumericRegex.test(input);
+}
 
 
-//タスクページ
-// app.get('/', (req, res) => {
-// 	let time = new Date();
-// 		//ログインしていないときリダイレクトする
-// 	if (!req.session.userId) {
-// 		return res.redirect('/login');
-// 	}
-// 		//ログインしているアカウントのタスクを取得
-// 		connection.query('SELECT * FROM tasks WHERE user_id = ?', [req.session.userId], (err, results) => {
-// 		if (err) throw err;
-// 		let jsonData = language_check(req);
-// 		res.render('index', { tasks: results, language: jsonData});
-// 		console.log(`${new Date() - time}ms`);
-// 	});
 
-// });
 //追加した順に表示
 app.get('/', (req, res) => {
 	let time = new Date();
@@ -59,9 +73,26 @@ app.get('/', (req, res) => {
   //ログインしているアカウントのタスクを取得
   connection.query('SELECT * FROM tasks WHERE user_id = ? ORDER BY created_at DESC', [req.session.userId], (err, results) => {
   if (err) throw err;
-  let jsonData = language_check(req);
-  res.render('index', { tasks: results, language: jsonData});
+  let jsondata = language_check(req);
+  res.render('index', { tasks: results, language: jsondata});
   console.log(`${new Date() - time}ms`);
+	});
+
+});
+
+//古い順
+app.get('/default', (req, res) => {
+	let time = new Date();
+		//ログインしていないときリダイレクトする
+	if (!req.session.userId) {
+		return res.redirect('/login');
+	}
+		//ログインしているアカウントのタスクを取得
+		connection.query('SELECT * FROM tasks WHERE user_id = ?', [req.session.userId], (err, results) => {
+		if (err) throw err;
+		let jsondata = language_check(req);
+		res.render('default', { tasks: results, language: jsondata});
+		console.log(`${new Date() - time}ms`);
 	});
 
 });
@@ -71,29 +102,17 @@ app.get('/', (req, res) => {
 
 //アカウント作成ページ
 app.get('/signup', (req, res) => {
-	res.render('signup', { errorMessage: null});
+  let jsondata = language_check(req);
+	res.render('signup', { errorMessage: null, language: jsondata});
 });
 
 //ログインページ表示
 app.get('/login', (req, res) => {
-	res.render('login', {errorMessage: null});
+  let jsondata = language_check(req);
+	res.render('login', { errorMessage: null, language: jsondata});
 });
 
-function language_check(req){
-  //言語取得して適切なjsonファイルを読み取る
-  let language = req.headers['accept-language'];
-  let primaryLanguage = language.split(',')[0].split(';')[0];
-  let filePath = `./language/${primaryLanguage}.json`;
-  let jsonData;
-  if (fs.existsSync(filePath)) {
-    let data = fs.readFileSync(filePath);
-    jsonData = JSON.parse(data);
-  } else {
-    let data = fs.readFileSync('./language/en.json');
-    jsonData = JSON.parse(data);
-  }
-  return jsonData;
-}
+
 
 
 
@@ -111,6 +130,18 @@ app.post('/add', (req, res) => {
   });
 });
 
+app.post('/default/add', (req, res) => {
+  const taskName = req.body.taskName;
+	const userId = req.session.userId;
+  if (!req.session.userId) {
+    return res.redirect('/login');
+  }
+	connection.query('INSERT INTO tasks (task_name, user_id) VALUES (?, ?)', [taskName, userId], (err, results)=> {
+    if (err) throw err;
+    res.redirect('/default');
+  });
+});
+
 // タスク削除処理
 app.post('/delete', (req, res) => {
   const taskId = req.body.taskId;
@@ -125,36 +156,67 @@ app.post('/delete', (req, res) => {
 
 // アカウント作成処理
 app.post('/signup', (req, res) => {
-  const username = req.body.username;
+  const user_name = req.body.username;
   const password = req.body.password;
+  //アルファベットと数字以外がある場合
+  if (!account_str_check(user_name) || !account_str_check(password)){
+    let jsondata = language_check(req);
+    res.render('signup', { errorMessage: "使えるのはアルファベットと数字(いずれも半角)です", language: jsondata});
+    return;
+  }
 
-  connection.query('SELECT * FROM users WHERE user_name = ?', [username], (err, results) => {
+  connection.query('SELECT * FROM users WHERE user_name = ?', [user_name], (err, results) => {
     if (err) throw err;
 
     if (results.length > 0) {
-      res.render('signup', { errorMessage: 'ユーザー名が既に使用されています' });
-    } else {
-      connection.query('INSERT INTO users (user_name, user_password) VALUES (?, ?)', [username, password], (err, results) => {
+      let jsondata = language_check(req);
+      res.render('signup', { errorMessage: 'ユーザー名が既に使用されています', language: jsondata});
+      return;
+    }
+
+    bcrypt.hash(password, saltRounds, (err, hash) => {
+      if (err) throw err;
+
+      connection.query('INSERT INTO users (user_name, user_password) VALUES (?, ?)', [user_name, hash], (err, results) => {
         if (err) throw err;
         res.redirect('/login');
       });
+    });
+  });
+});
+
+
+// ログイン処理
+app.post('/login', (req, res) => {
+  const user_name = req.body.username;
+  const password = req.body.password;
+  connection.query('SELECT * FROM users WHERE user_name = ?', [user_name], (err, results) => {
+    if (err) throw err;
+
+    if (results.length > 0) {
+      bcrypt.compare(password, results[0].user_password, (err, result) => {
+        if (err) throw err;
+
+        if (result === true) {
+          req.session.userId = results[0].id;
+          res.redirect('/');
+        } else {
+          let jsondata = language_check(req);
+          res.render('login', { errorMessage: 'ユーザーネームかパスワードが違います', language: jsondata});
+        }
+      });
+    } else {
+      let jsondata = language_check(req);
+      res.render('login', { errorMessage: 'ユーザーネームかパスワードが違います', language: jsondata});
     }
   });
 });
 
-// ログイン処理
-app.post('/login', (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  connection.query('SELECT * FROM users WHERE user_name = ? AND user_password = ?', [username, password], (err, results) => {
-    if (results.length > 0) {
-      req.session.userId = results[0].id;
-      res.redirect('/');
-    } else {
-      res.render('login', { errorMessage: 'ユーザーネームかパスワードが違います' });
-    }
-  });
-  });
+//存在しないページの処理
+app.use((req, res, next) => {
+  res.status(404).redirect('/');
+});
+
 
 
 // サーバー起動

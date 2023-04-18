@@ -10,9 +10,9 @@
     <h1 class="mb-4"><%= language.title %></h1>
 		  <div class="card mt-4">
       <div class="card-body">
-        <a href="/default"><%= language.omoitukanai %></a>
+        <a href="/index"><%= language.new_task_view %></a>
         <h2 id="" class="card-title mb-4"><%= language.new_task %></h2>
-				<form action="/add" method="post" onsubmit="return validateForm()">
+				<form action="/default/add" method="post" onsubmit="return validateForm()">
 
           <div class="form-group">
             <input id="taskNameInput" class="form-control" type="text" name="taskName" placeholder="<%= language.new_task_name %>" required maxlength="150">
