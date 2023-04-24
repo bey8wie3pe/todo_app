@@ -1,14 +1,14 @@
 const express = require('express');
-const mysql = require('mysql');
-const ejs = require('ejs');
-const session = require('express-session');
 const app = express();
-const fs = require('fs');
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const fs = require('fs');
+const { language_check } = require('./routes/language');
+
+const mysql = require('mysql');
 
 //MySQL接続設定
 const connection = mysql.createConnection({
@@ -24,34 +24,15 @@ connection.connect((err) => {
   console.log('Connected to MySQL');
 });
 
-//ログインセッション
-app.use(session({
-  secret: "alkjfafklajfklajfkakdfdsjfiwfwkf09458370924789540389m4v82;irojgptwjgh89b0654h0t3h8gb34t6htbghu89th09tynm90rcevn",
-  resave: false,
-  saveUninitialized: true,
-  //30日保存する
-  cookie: { maxAge: 60 * 60 *  24 * 30* 1000} 
-}));
 
-//言語取得して適切なjsonファイルを読み取る
-function language_check(req){
-  let language = req.headers['accept-language'];
-  let primaryLanguage = language.split(',')[0].split(';')[0];
-  if (primaryLanguage === "ja-JP"){
-    primaryLanguage = "ja"
-  }
-  let filePath = `./language/${primaryLanguage}.json`;
-  console.log(filePath);
-  let jsondata;
-  if (fs.existsSync(filePath)) {
-    let data = fs.readFileSync(filePath);
-    jsondata = JSON.parse(data);
-  } else {
-    let data = fs.readFileSync('./language/en.json');
-    jsondata = JSON.parse(data);
-  }
-  return jsondata;
-}
+
+const get = require("./routes/get");
+
+app.use("/", get);
+app.use("/default", get);
+app.use("/signup", get);
+app.use("/login", get);
+
 
 function account_str_check(input) {
   //8文字以上かつアルファベットと数字のみ
@@ -63,54 +44,7 @@ function account_str_check(input) {
 
 
 
-//追加した順に表示
-app.get('/', (req, res) => {
-	let time = new Date();
-	//ログインしていないときリダイレクトする
-	if (!req.session.userId) {
-		return res.redirect('/login');
-	}
-  //ログインしているアカウントのタスクを取得
-  connection.query('SELECT * FROM tasks WHERE user_id = ? ORDER BY created_at DESC', [req.session.userId], (err, results) => {
-  if (err) throw err;
-  let jsondata = language_check(req);
-  res.render('index', { tasks: results, language: jsondata});
-  console.log(`${new Date() - time}ms`);
-	});
 
-});
-
-//古い順
-app.get('/default', (req, res) => {
-	let time = new Date();
-		//ログインしていないときリダイレクトする
-	if (!req.session.userId) {
-		return res.redirect('/login');
-	}
-		//ログインしているアカウントのタスクを取得
-		connection.query('SELECT * FROM tasks WHERE user_id = ?', [req.session.userId], (err, results) => {
-		if (err) throw err;
-		let jsondata = language_check(req);
-		res.render('default', { tasks: results, language: jsondata});
-		console.log(`${new Date() - time}ms`);
-	});
-
-});
-
-
-
-
-//アカウント作成ページ
-app.get('/signup', (req, res) => {
-  let jsondata = language_check(req);
-	res.render('signup', { errorMessage: null, language: jsondata});
-});
-
-//ログインページ表示
-app.get('/login', (req, res) => {
-  let jsondata = language_check(req);
-	res.render('login', { errorMessage: null, language: jsondata});
-});
 
 
 

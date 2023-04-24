@@ -2,16 +2,28 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><%= language.signup_title %></title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <style>
+    /* アカウント作成ボタン */
+    button[type="submit"] {
+      font-size: 16px;
+      padding: 10px;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h1 class="mt-5 mb-4 text-center"><%= language.signup_title %></h1>
     <div class="row justify-content-center">
       <div class="col-md-6">
-				<a href="/login"><%= language.account_created %></a>
-        <br>
+        <a href="/login" class="d-block mb-4"><%= language.account_created %></a>
         <%= errorMessage %>
         <form method="POST" action="/signup">
           <div class="form-group">
@@ -27,18 +39,5 @@
       </div>
     </div>
   </div>
-	<style>
-		/* アカウント作成ボタン */
-		button[type="submit"] {
-			font-size: 16px;
-			padding: 10px;
-			border-radius: 5px;
-			background-color: #007bff;
-			color: #fff;
-			border: none;
-			width: 100%;
-		}
-	
-	</style>
 </body>
 </html>
