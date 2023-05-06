@@ -55,6 +55,9 @@ function account_str_check(input) {
 app.post('/add', (req, res) => {
   const taskName = req.body.taskName;
 	const userId = req.session.userId;
+
+  const priority = req.body['selected-value'];
+  console.log(priority);
   if (!req.session.userId) {
     return res.redirect('/login');
   }
@@ -67,6 +70,7 @@ app.post('/add', (req, res) => {
 app.post('/default/add', (req, res) => {
   const taskName = req.body.taskName;
 	const userId = req.session.userId;
+
   if (!req.session.userId) {
     return res.redirect('/login');
   }
@@ -79,6 +83,7 @@ app.post('/default/add', (req, res) => {
 // タスク削除処理
 app.post('/delete', (req, res) => {
   const taskId = req.body.taskId;
+  console.log(taskId);
   if (!req.session.userId) {
     return res.redirect('/login');
   }

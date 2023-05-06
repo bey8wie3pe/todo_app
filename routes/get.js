@@ -35,7 +35,6 @@ router.use(session({
 
 //追加した順に表示
 router.get('/', (req, res) => {
-  res.set('ngrok-skip-browser-warning', 'true');
 	let time = new Date();
 	//ログインしていないときリダイレクトする
 	if (!req.session.userId) {

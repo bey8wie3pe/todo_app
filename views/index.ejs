@@ -13,12 +13,21 @@
       <div class="card-body">
         <a href="/default"><%= language.omoitukanai %></a>
         <h2 id="" class="card-title mb-4"><%= language.new_task %></h2>
-        <form action="/add" method="post" onsubmit="return validateForm()">
+        <form id="task-form" action="/add" method="post" onsubmit="return validateForm();">
           <div class="form-group">
             <input id="taskNameInput" class="form-control" type="text" name="taskName" placeholder="<%= language.new_task_name %>" required maxlength="150">
           </div>
+          <input type="hidden" id="selected-value" name="selected-value">
           <button class="btn btn-primary"><%= language.add_btn %></button>
+        
+          <p>優先度を入力</p>
+          <button id="low" name="low-priority" type="button" class="btn btn-secondary" value="low_priority">小</button>
+          <button id="medium" name="medium-priority" type="button" class="btn btn-secondary" value="medium_priority">中</button>
+          <button id="high" name="high-priority" type="button" class="btn btn-secondary" value="high_priority">大</button>
+          
         </form>
+        
+
       </div>
     </div>
     
@@ -61,6 +70,14 @@
         alert("<%= language.task_add_error %>");
         return false;
       }
+
+      const selectedValue = document.querySelector('#selected-value').value;
+      // 優先度が選択されていない場合は送信しない
+      if (!selectedValue) {
+        alert('優先度を選択してください。');
+        return false;
+      }
+
       return true;
     }
 
@@ -76,6 +93,37 @@
         textarea.value = textarea.value.slice(0, 150);
         counter.innerHTML = "<%= language.task_text_alert %>";
       }
+    });
+
+    const taskForm = document.querySelector('#task-form');
+    taskForm.addEventListener('submit', validateForm);
+
+
+
+    const lowPriorityBtn = document.querySelector('button[name="low-priority"]');
+    const mediumPriorityBtn = document.querySelector('button[name="medium-priority"]');
+    const highPriorityBtn = document.querySelector('button[name="high-priority"]');
+    const selectedValueInput = document.querySelector('#selected-value');
+
+    lowPriorityBtn.addEventListener('click', () => {
+      selectedValueInput.value = 'low-priority';
+      lowPriorityBtn.classList.add('btn-info');
+      mediumPriorityBtn.classList.remove('btn-info');
+      highPriorityBtn.classList.remove('btn-info');
+    });
+
+    mediumPriorityBtn.addEventListener('click', () => {
+      selectedValueInput.value = 'medium-priority';
+      lowPriorityBtn.classList.remove('btn-info');
+      mediumPriorityBtn.classList.add('btn-info');
+      highPriorityBtn.classList.remove('btn-info');
+    });
+
+    highPriorityBtn.addEventListener('click', () => {
+      selectedValueInput.value = 'high-priority';
+      lowPriorityBtn.classList.remove('btn-info');
+      mediumPriorityBtn.classList.remove('btn-info');
+      highPriorityBtn.classList.add('btn-info');
     });
 
 
