@@ -8,6 +8,7 @@ const saltRounds = 10;
 const fs = require('fs');
 const { language_check } = require('./routes/language');
 
+
 const mysql = require('mysql');
 
 //MySQL接続設定
@@ -42,15 +43,6 @@ function account_str_check(input) {
   return alphanumericRegex.test(input);
 }
 
-
-
-
-
-
-
-
-
-
 //タスク追加処理
 app.post('/add', (req, res) => {
   const taskName = req.body.taskName;
@@ -61,7 +53,7 @@ app.post('/add', (req, res) => {
   if (!req.session.userId) {
     return res.redirect('/login');
   }
-	connection.query('INSERT INTO tasks (task_name, user_id) VALUES (?, ?)', [taskName, userId], (err, results)=> {
+	connection.query('INSERT INTO tasks (task_name, user_id, priority) VALUES (?, ?, ?)', [taskName, userId, priority], (err, results)=> {
     if (err) throw err;
     res.redirect('/');
   });

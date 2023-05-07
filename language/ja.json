@@ -7,6 +7,7 @@
 	"add_btn": "追加",
 	"task_list": "タスク一覧",
 	"task_add_date": "追加日",
+	"task_priority": "優先度",
 	"task_delete": "削除",
 	"task_add_error": "タスク名を入力してください",
 	"task_text_limit": "/ 150文字",

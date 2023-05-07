@@ -21,9 +21,9 @@
           <button class="btn btn-primary"><%= language.add_btn %></button>
         
           <p>優先度を入力</p>
-          <button id="low" name="low-priority" type="button" class="btn btn-secondary" value="low_priority">小</button>
-          <button id="medium" name="medium-priority" type="button" class="btn btn-secondary" value="medium_priority">中</button>
-          <button id="high" name="high-priority" type="button" class="btn btn-secondary" value="high_priority">大</button>
+          <button id="low" name="low-priority" type="button" class="btn btn-secondary">小</button>
+          <button id="medium" name="medium-priority" type="button" class="btn btn-secondary">中</button>
+          <button id="high" name="high-priority" type="button" class="btn btn-secondary">大</button>
           
         </form>
         
@@ -40,6 +40,8 @@
               <tr>
                 <th><%= language.task_name %></th>
                 <th><%= language.task_add_date %></th>
+                <th><%= language.task_priority %></th>
+                <th><%= language.task_priority %></th>
                 <th></th>
               </tr>
             </thead>
@@ -48,6 +50,7 @@
                 <tr>
                   <td><%= tasks[i].task_name %></td>
                   <td><%= new Date(tasks[i].time).toLocaleString() %></td>
+                  <td><%= tasks[i].priority %></td>
                   <td>
                     <form action="/delete" method="post">
                       <input type="hidden" name="taskId" value="<%= tasks[i].id %>">
@@ -106,21 +109,21 @@
     const selectedValueInput = document.querySelector('#selected-value');
 
     lowPriorityBtn.addEventListener('click', () => {
-      selectedValueInput.value = 'low-priority';
+      selectedValueInput.value = '1';
       lowPriorityBtn.classList.add('btn-info');
       mediumPriorityBtn.classList.remove('btn-info');
       highPriorityBtn.classList.remove('btn-info');
     });
 
     mediumPriorityBtn.addEventListener('click', () => {
-      selectedValueInput.value = 'medium-priority';
+      selectedValueInput.value = '2';
       lowPriorityBtn.classList.remove('btn-info');
       mediumPriorityBtn.classList.add('btn-info');
       highPriorityBtn.classList.remove('btn-info');
     });
 
     highPriorityBtn.addEventListener('click', () => {
-      selectedValueInput.value = 'high-priority';
+      selectedValueInput.value = '3';
       lowPriorityBtn.classList.remove('btn-info');
       mediumPriorityBtn.classList.remove('btn-info');
       highPriorityBtn.classList.add('btn-info');

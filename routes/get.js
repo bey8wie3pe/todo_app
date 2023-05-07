@@ -67,6 +67,17 @@ router.get('/default', (req, res) => {
 
 });
 
+router.get("/priority", (req, res) => {
+  if (!req.session.userId) {
+    return res.redirect("/login");
+  }
+  connection.query("SELECT * FROM tasks WHERE user_id = ? ORDER BY priority DESC",[req.session.userId],(err, results) => {
+      if (err) throw err;
+      let jsondata = language_check(req);
+      res.render("index", { tasks: results, language: jsondata });
+    }
+  );
+});
 
 
 
