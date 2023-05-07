@@ -8,6 +8,10 @@ const saltRounds = 10;
 const fs = require('fs');
 const { language_check } = require('./routes/language');
 
+const server = require('https').createServer({
+  key: fs.readFileSync('./privatekey.pem'),
+  cert: fs.readFileSync('./cert.pem'),
+}, app)
 
 const mysql = require('mysql');
 
