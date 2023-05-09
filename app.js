@@ -7,11 +7,15 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const fs = require('fs');
 const { language_check } = require('./routes/language');
+const https = require('https');
 
-const server = require('https').createServer({
-  key: fs.readFileSync('./privatekey.pem'),
-  cert: fs.readFileSync('./cert.pem'),
-}, app)
+// HTTPSサーバーの設定
+const options = {
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.crt')
+};
+
+
 
 const mysql = require('mysql');
 
@@ -154,7 +158,17 @@ app.use((req, res, next) => {
 
 
 
-// サーバー起動
-app.listen(3000, () => {
-  console.log('Server started on port 3000');
+// openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 3650000
+
+//HTTPSサーバーの作成
+const server = https.createServer(options, app);
+
+//HTTPSサーバーの起動
+server.listen(3000, () => {
+  console.log('HTTPS server started on port 443');
 });
+
+// app.listen(3000, () => {
+//   console.log("localhost:3000");
+// })
+
