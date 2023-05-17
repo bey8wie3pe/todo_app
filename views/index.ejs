@@ -12,6 +12,7 @@
     <div class="card mt-4">
       <div class="card-body">
         <a href="/default"><%= language.omoitukanai %></a>
+        <a href="/priority">優先度順に見る</a>
         <h2 id="" class="card-title mb-4"><%= language.new_task %></h2>
         <form id="task-form" action="/add" method="post" onsubmit="return validateForm();">
           <div class="form-group">
@@ -21,12 +22,20 @@
           <button class="btn btn-primary"><%= language.add_btn %></button>
         
           <p>優先度を入力</p>
-          <button id="low" name="low-priority" type="button" class="btn btn-secondary">小</button>
-          <button id="medium" name="medium-priority" type="button" class="btn btn-secondary">中</button>
-          <button id="high" name="high-priority" type="button" class="btn btn-secondary">大</button>
+
+          <div class="d-flex justify-content-between">
+            <div>
+              <button id="low" name="low-priority" type="button" class="btn btn-secondary btn-lg">小</button>
+            </div>
+            <div>
+              <button id="medium" name="medium-priority" type="button" class="btn btn-secondary btn-lg">中</button>
+            </div>
+            <div>
+              <button id="high" name="high-priority" type="button" class="btn btn-secondary btn-lg">大</button>
+            </div>
+          </div>
           
         </form>
-        
 
       </div>
     </div>

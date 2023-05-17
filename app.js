@@ -165,7 +165,7 @@ const server = https.createServer(options, app);
 
 //HTTPSサーバーの起動
 server.listen(3000, () => {
-  console.log('HTTPS server started on port 443');
+  console.log('HTTPS server started on port 3000');
 });
 
 // app.listen(3000, () => {

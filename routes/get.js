@@ -61,7 +61,7 @@ router.get('/default', (req, res) => {
 		connection.query('SELECT * FROM tasks WHERE user_id = ?', [req.session.userId], (err, results) => {
 		if (err) throw err;
 		let jsondata = language_check(req);
-		res.render('default', { tasks: results, language: jsondata});
+		res.render('index', { tasks: results, language: jsondata});
 		console.log(`${new Date() - time}ms`);
 	});
 
