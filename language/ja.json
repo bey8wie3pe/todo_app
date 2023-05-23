@@ -1,6 +1,11 @@
 {
 	"title": "TODOアプリ",
-	"new_task_view": "新しい順に見る",
+	"menu": "メニュー",
+	"menu_home": "ホーム",
+	"menu_sigup": "アカウント作成",
+	"menu_login": "ログイン",
+	"menu_logout": "ログアウト",
+	"new_task_view": "追加した順に見る",
 	"oldest_tasks": "日付が古い順に見る",
 	"priority_tasks":"優先度順に見る",
 	"new_task": "新しいタスクを追加",

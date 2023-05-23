@@ -40,7 +40,7 @@ router.get('/', (req, res) => {
 	if (!req.session.userId) {
 		return res.redirect('/login');
 	}
-  //ログインしているアカウントのタスクを取得
+  //ログインしているアカウントのタスクを日付順に取得
   connection.query('SELECT * FROM tasks WHERE user_id = ? ORDER BY created_at DESC', [req.session.userId], (err, results) => {
   if (err) throw err;
   let jsondata = language_check(req);
@@ -57,7 +57,7 @@ router.get('/default', (req, res) => {
 	if (!req.session.userId) {
 		return res.redirect('/login');
 	}
-		//ログインしているアカウントのタスクを取得
+		//ログインしているアカウントのタスクを古い順に取得
 		connection.query('SELECT * FROM tasks WHERE user_id = ?', [req.session.userId], (err, results) => {
 		if (err) throw err;
 		let jsondata = language_check(req);
@@ -71,6 +71,7 @@ router.get("/priority", (req, res) => {
   if (!req.session.userId) {
     return res.redirect("/login");
   }
+  //ログインしているアカウントのタスクを優先度順に取得
   connection.query("SELECT * FROM tasks WHERE user_id = ? ORDER BY priority DESC",[req.session.userId],(err, results) => {
       if (err) throw err;
       let jsondata = language_check(req);

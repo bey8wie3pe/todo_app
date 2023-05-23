@@ -57,11 +57,13 @@ app.post('/add', (req, res) => {
 	const userId = req.session.userId;
 
   const priority = req.body['selected-value'];
+  const deadline = req.body["deadline"];
+  console.log(deadline);
   console.log(priority);
   if (!req.session.userId) {
     return res.redirect('/login');
   }
-	connection.query('INSERT INTO tasks (task_name, user_id, priority) VALUES (?, ?, ?)', [taskName, userId, priority], (err, results)=> {
+	connection.query('INSERT INTO tasks (task_name, user_id, priority, deadline) VALUES (?, ?, ?, ?)', [taskName, userId, priority, deadline], (err, results)=> {
     if (err) throw err;
     res.redirect('/');
   });
