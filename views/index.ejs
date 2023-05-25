@@ -16,9 +16,18 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/"><%= language.menu_home %></a>
+          <li>
+            <a class="nav-link active" aria-disabled="page" href="/"><%= language.new_task_view %></a>
           </li>
+          <li>
+            <a class="nav-link active" aria-disabled="page" href="/default"><%= language.oldest_tasks %></a>
+          </li>
+          <li>
+            <a class="nav-link active" aria-disabled="page" href="/priority"><%= language.priority_tasks %></a>
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/"><%= language.menu_home %></a>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" aria-disabled="page" href="signup"><%= language.menu_sigup %></a>
           </li>
@@ -28,15 +37,7 @@
           <li class="nav-item">
             <a class="nav-link" aria-disabled="page" href="logout"><%= language.menu_logout %></a>
           </li>
-          <li>
-            <a class="nav-link" aria-disabled="page" href="/"><%= language.new_task_view %></a>
-          </li>
-          <li>
-            <a class="nav-link" aria-disabled="page" href="/default"><%= language.oldest_tasks %></a>
-          </li>
-          <li>
-            <a class="nav-link" aria-disabled="page" href="/priority"><%= language.priority_tasks %></a>
-          </li>
+
         </ul>
       </div>
     </div>
@@ -54,9 +55,10 @@
             <input id="taskNameInput" class="form-control" type="text" name="taskName" placeholder="<%= language.new_task_name %>" required maxlength="150">
           </div>
           <input type="hidden" id="selected-value" name="selected-value">
-          <button class="btn btn-primary"><%= language.add_btn %></button>
+
           <br>
-          <input type="date" name="deadline">
+          <label for="deadline">期限日</label>
+          <input type="date" name="deadline" id="date">
           <p><%= language.priority_enter %></p>
 
           <div class="d-flex justify-content-between">
@@ -70,7 +72,7 @@
               <button id="high" name="high-priority" type="button" class="btn btn-secondary btn-lg"><%= language.priority_high %></button>
             </div>
           </div>
-          
+          <button class="btn btn-primary"><%= language.add_btn %></button>
         </form>
 
       </div>
@@ -85,6 +87,7 @@
               <tr>
                 <th><%= language.task_name %></th>
                 <th><%= language.task_add_date %></th>
+                <th>期限</th>
                 <th><%= language.task_priority %></th>
                 <th></th>
               </tr>
@@ -94,6 +97,7 @@
                 <tr>
                   <td><%= tasks[i].task_name %></td>
                   <td><%= new Date(tasks[i].created_at).toLocaleString() %></td>
+                  <td><%= new Date(tasks[i].deadline).toLocaleString()  %></td>
                   <td>
                     <% switch (tasks[i].priority) {
                          case 1:
@@ -130,16 +134,22 @@
     function validateForm() {
       // 入力欄からスペースを取り除く
       const taskName = document.getElementById("taskNameInput").value.trim();
+      const task_date = document.getElementsById("date").value;
       // 空文字の場合は送信しない
       if (taskName === "") {
         alert("<%= language.task_add_error %>");
         return false;
       }
 
+
       const selectedValue = document.querySelector('#selected-value').value;
       // 優先度が選択されていない場合は送信しない
       if (!selectedValue) {
         alert('優先度を選択してください。');
+        return false;
+      }
+      if(!task_date){
+        alert("期限日を入力してください");
         return false;
       }
 
