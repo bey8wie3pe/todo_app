@@ -8,6 +8,8 @@ const saltRounds = 10;
 const fs = require('fs');
 const { language_check } = require('./routes/language');
 const https = require('https');
+const http = require("http");
+
 
 // HTTPSサーバーの設定
 const options = {
