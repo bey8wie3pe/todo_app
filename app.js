@@ -8,7 +8,9 @@ const saltRounds = 10;
 const fs = require('fs');
 const { language_check } = require('./routes/language');
 const https = require('https');
-const http = require("http");
+
+
+
 
 
 // HTTPSサーバーの設定
@@ -155,20 +157,27 @@ app.post('/login', (req, res) => {
   });
 });
 
-//存在しないページの処理
-app.use((req, res, next) => {
-  res.status(404).redirect('/');
+app.post('/notification', (req, res) => {
+  const pushSubscription = req.body;
+  // PushSubscriptionをサーバー側で保存するなどの処理を行う
+  console.log('PushSubscriptionを受け取りました:', pushSubscription);
+  res.sendStatus(200);
 });
+
+//存在しないページの処理
+// app.use((req, res, next) => {
+//   res.status(404).redirect('/');
+// });
 
 
 
 // openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 3650000
 
 //HTTPSサーバーの作成
-const server = https.createServer(options, app);
+const https_server = https.createServer(options, app);
 
 //HTTPSサーバーの起動
-server.listen(3000, () => {
+https_server.listen(3000, () => {
   console.log('HTTPS server started on port 3000');
 });
 
